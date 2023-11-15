@@ -22,7 +22,7 @@ services:
   director:
     image: agoldis/sorry-cypress-director:latest
     environment:
-      DASHBOARD_URL: http://192.168.200.206:8080
+      DASHBOARD_URL: http://localhost:8080
       EXECUTION_DRIVER: "../execution/mongo/driver"
       MONGODB_URI: mongodb://root:password@mongo:27017/sorry-cypress?authSource=admin
       MONGODB_DATABASE: "sorry-cypress"
@@ -31,8 +31,8 @@ services:
       GITLAB_JOB_RETRIES: "false"
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: password
-      MINIO_ENDPOINT: "192.168.200.206"
-      MINIO_URL: "http://192.168.200.206"
+      MINIO_ENDPOINT: "localhost"
+      MINIO_URL: "http://localhost"
       MINIO_PORT: "9000"
       MINIO_USESSL: "false"
       MINIO_BUCKET: sorry-cypress
@@ -58,7 +58,7 @@ services:
   dashboard:
     image: agoldis/sorry-cypress-dashboard:latest
     environment:
-      GRAPHQL_SCHEMA_URL: http://192.168.200.206:4000
+      GRAPHQL_SCHEMA_URL: http://localhost:4000
       GRAPHQL_CLIENT_CREDENTIALS: ""
       PORT: 8080
       CI_URL: ""
@@ -86,10 +86,18 @@ services:
     entrypoint: >
       /bin/sh -c "
       sleep 3;
-      /usr/bin/mc config host add myminio http://admin:password@localhost:9000 ;
+      /usr/bin/mc config host add myminio http://localhost:9000 admin password;
       /usr/bin/mc rm -r --dangerous --force myminio/sorry-cypress;
       /usr/bin/mc mb myminio/sorry-cypress;
       /usr/bin/mc anonymous set download myminio/sorry-cypress;
       /usr/bin/mc anonymous set public myminio/sorry-cypress;
       exit 0;
       "
+
+# // currents.config.js
+# module.exports = {
+#   projectId: "yyy", // the projectId, can be any values for sorry-cypress users
+#   recordKey: "xxy", // the record key, can be any value for sorry-cypress users
+#   cloudServiceUrl: "http://localhost:1234", // Sorry Cypress users - set the director service URL
+# };
+
